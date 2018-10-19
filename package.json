@@ -1,0 +1,46 @@
+{
+  "name": "basic-bank",
+  "version": "1.0.0",
+  "description": "Basic Bank App using Express.js, Mongo and React",
+  "main": "index.js",
+  "engines": {
+    "node": "8.12.0",
+    "npm": "6.4.1"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "server": "nodemon server/index.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lbcoutinho/basic-bank.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "javascript",
+    "react"
+  ],
+  "author": "Leandro Coutinho",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lbcoutinho/basic-bank/issues"
+  },
+  "homepage": "https://github.com/lbcoutinho/basic-bank#readme",
+  "devDependencies": {
+    "concurrently": "3.5.1",
+    "nodemon": "1.17.3"
+  },
+  "dependencies": {
+    "body-parser": "1.18.3",
+    "cookie-session": "2.0.0-beta.3",
+    "express": "4.16.3",
+    "mongoose": "5.0.14",
+    "passport": "0.4.0",
+    "passport-google-oauth20": "1.0.0",
+    "path-parser": "4.1.0"
+  }
+}
