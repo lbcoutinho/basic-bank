@@ -62,3 +62,6 @@ dist/
 
 # Secret files
 keys.js
+
+# VS Code
+.vscode/

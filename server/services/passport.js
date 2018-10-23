@@ -42,7 +42,7 @@ passport.use(
       await new Account({
         user: user._id,
         number: Math.floor(Math.random() * 10000).toString(),
-        balance: 5000 // TODO remove for final version
+        balance: 1000 // Initial balance set for test purposes
       }).save();
 
       done(null, user);

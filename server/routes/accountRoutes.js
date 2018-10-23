@@ -39,11 +39,10 @@ module.exports = app => {
 
     // Get current user account
     const originAccount = await Account.findOne({ user: req.user.id }).select({
-      contacts: false,
-      history: false
+      number: true, balance: true
     });
 
-    response.origin = { number: originAccount.number };
+    response.origin = { userId: req.user.id, name: req.user.fullName, number: originAccount.number };
 
     // Get value from request body
     const value = new Number(req.body.value);
@@ -76,7 +75,7 @@ module.exports = app => {
 
     if (destinationAccount) {
       const destinationUser = await User.findOne({ _id: destinationAccount.user });
-      response.destination = { name: destinationUser.fullName, number: destinationAccount.number };
+      response.destination = { userId: destinationUser._id, name: destinationUser.fullName, number: destinationAccount.number };
     } else {
       // Abort validation if destination is invalid
       response.invalidDestination = 'Invalid destination account';
@@ -99,26 +98,47 @@ module.exports = app => {
   });
 
   // Performs transfer operation
-  // Currently implementation is not atomic
-  // TODO add operation to history
+  // Obs: Currently implementation is not atomic
+  // Expected input:
+  //   {
+  //     "origin": {
+  //         "userId": "5bce73076b90e6f",
+  //         "name": "User 1",
+  //         "number": "8605"
+  //     },
+  //     "value": 100,
+  //     "destination": {
+  //         "userId": "5bce1fa3b05d52b",
+  //         "name": "User 2",
+  //         "number": "4892"
+  //     },
+  //     "useCreditCard": "message" // Message will contain this param if account balance is insufficient
+  // }
   app.put('/api/account/transfer', requireLogin, async (req, res) => {
+
+    const { origin, destination, useCreditCard } = req.body;
     const value = new Number(req.body.value);
-    // if (req.body.useCreditCard) {
-    //   const card = await CreditCard.findOne({ user: req.user.id });
-    //   card.totalSpent += value;
-    //   card.save();
-    // } else {
-    //   const origin = await Account.findOne({ number: req.body.origin.number });
-    //   origin.balance -= value;
-    //   origin.save();
-    // }
+    const date = new Date();
 
-    // const destination = await Account.findOne({ number: req.body.destination.number });
-    // destination.balance += value;
-    // destination.save();
+    // Check if useCreditCard value is present in the request
+    const historyEntry = { sentTo: destination.userId, description: `Transfer to ${destination.name}`, amount: value, date };
+    if (useCreditCard) {
+      await CreditCard.updateOne({ user: origin.userId }, {
+        $inc: { totalSpent: value },
+        $push: { history: historyEntry }
+      }).exec();
+    } else {
+      await Account.updateOne({ number: origin.number }, {
+        $inc: { balance: -value },
+        $push: { history: historyEntry }
+      }).exec();
+    }
 
-    await Account.updateOne({ user: req.user.id }, { $push: { history: {} } }).exec();
+    await Account.updateOne({ number: destination.number }, {
+      $inc: { balance: value },
+      $push: { history: { receivedFrom: origin.userId, description: `Received transfer from ${origin.name}`, amount: value, date } }
+    }).exec();
 
-    res.send({});
+    res.status(204).send();
   });
 };
