@@ -1,0 +1,103 @@
+.loading {
+  margin: auto;
+  margin-top: 2em;
+}
+
+.page-title {
+  padding: 1em;
+  min-height: 4em;
+}
+
+.page-title h5 {
+  width: 50%;
+  margin: auto;
+}
+
+.page-title-btn {
+  position: relative;
+  top: -0.3em;
+}
+
+/* Dashboard */
+.account-info {
+  color: #333;
+  margin: auto;
+}
+
+.account-info h5 {
+  font-weight: bold;
+}
+
+.account-history tr th:nth-child(1),
+.account-history tr th:nth-child(3) {
+  width: 15%;
+}
+
+.account-history tr:nth-child(even) {
+  background: #ccc;
+}
+
+.positive {
+  color: blue;
+}
+
+.negative {
+  color: red;
+}
+
+/* Credit Card List */
+.credit-card-list-title {
+  width: 50%;
+  margin: auto;
+}
+
+.card-info {
+  display: inline-block;
+  margin-top: 2em;
+  width: 100%;
+}
+
+.card-header {
+  font-size: 2em;
+  height: 2em;
+}
+
+.card-number {
+  font-size: 1.3em;
+  margin-bottom: 1em;
+}
+
+.card-footer {
+  height: 3em;
+}
+
+.card-visa {
+  margin-top: 1em;
+}
+
+.card .card-content {
+  padding: 1em !important;
+}
+
+/* Credit Card Details */
+.info-group label {
+  color: #333;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+/* Credit Card New */
+.field-group {
+  margin-top: 1em;
+}
+
+.field-group label {
+  font-weight: bold;
+  font-size: 1em;
+  color: #333;
+}
+
+.field-group select {
+  border: 1px solid #aaa;
+  width: auto;
+}

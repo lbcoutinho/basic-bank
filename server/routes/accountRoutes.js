@@ -121,7 +121,7 @@ module.exports = app => {
     const date = new Date();
 
     // Check if useCreditCard value is present in the request
-    const historyEntry = { sentTo: destination.userId, description: `Transfer to ${destination.name}`, amount: value, date };
+    const historyEntry = { sentTo: destination.userId, description: `Transfer sent to ${destination.name}`, amount: -value, date };
     if (useCreditCard) {
       await CreditCard.updateOne({ user: origin.userId }, {
         $inc: { totalSpent: value },
@@ -136,7 +136,7 @@ module.exports = app => {
 
     await Account.updateOne({ number: destination.number }, {
       $inc: { balance: value },
-      $push: { history: { receivedFrom: origin.userId, description: `Received transfer from ${origin.name}`, amount: value, date } }
+      $push: { history: { receivedFrom: origin.userId, description: `Transfer received from ${origin.name}`, amount: value, date } }
     }).exec();
 
     res.status(204).send();

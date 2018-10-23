@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux';
 import { reducer as reduxForm } from 'redux-form';
 import authReducer from './authReducer';
-import surveysReducer from './surveysReducer';
+import accountReducer from './accountReducer';
+import creditCardReducer from './creditCardReducer';
 
 export default combineReducers({
   auth: authReducer,
-  form: reduxForm,
-  surveys: surveysReducer
+  account: accountReducer,
+  creditCard: creditCardReducer,
+  form: reduxForm
 });

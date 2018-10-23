@@ -14,12 +14,17 @@ function generateCreditCardNumber() {
 }
 
 module.exports = app => {
-  // Get credit card by current user id
+  // Get all credit cards by current user id
   app.get('/api/credit-card', requireLogin, async (req, res) => {
     const cards = await CreditCard.find({ user: req.user.id }).select({
       history: false
     });
     res.send(cards);
+  });
+
+  // Get single credit card by id
+  app.get('/api/credit-card/:id', requireLogin, async (req, res) => {
+    res.send(await CreditCard.findById(req.params.id));
   });
 
   // Create new credit card for current user
@@ -28,7 +33,7 @@ module.exports = app => {
     const currentDate = new Date();
 
     try {
-      const card = await new CreditCard({
+      await new CreditCard({
         user: req.user.id,
         expirationMonth: currentDate.getMonth() + 1,
         expirationYear: currentDate.getFullYear() + 4,
@@ -36,9 +41,15 @@ module.exports = app => {
         flag
       }).save();
 
-      res.send(card);
+      res.status(204).send();
     } catch (err) {
       res.status(400).send(err);
     }
+  });
+
+  // Delete credit card by id
+  app.delete('/api/credit-card/:id', requireLogin, async (req, res) => {
+    await CreditCard.deleteOne({ _id: req.params.id });
+    res.status(204).send();
   });
 };
