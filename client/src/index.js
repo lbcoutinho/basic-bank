@@ -8,17 +8,14 @@ import thunk from 'redux-thunk';
 import App from './components/App';
 import rootReducer from './reducers';
 
-// Development only axios helper
-import axios from 'axios';
-window.axios = axios;
-
 const initialState = {};
 const store = createStore(
   rootReducer,
   initialState,
   compose(
     applyMiddleware(thunk),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() // Enable Redux DevTools chrome extension
+    // Enable Redux DevTools chrome extension
+    ...(window.__REDUX_DEVTOOLS_EXTENSION__ ? [window.__REDUX_DEVTOOLS_EXTENSION__()] : [])
   )
 );
 

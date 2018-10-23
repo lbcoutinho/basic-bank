@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const keys = require('../config/keys');
 
 const User = mongoose.model('users');
+const Account = mongoose.model('accounts');
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -30,7 +31,20 @@ passport.use(
         return done(null, existingUser);
       }
 
-      const user = await new User({ googleId: profile.id }).save();
+      const user = await new User({
+        googleId: profile.id,
+        givenName: profile.name.givenName,
+        fullName: profile.displayName,
+        email: profile.emails[0].value
+      }).save();
+
+      // Create account on user first access. Account number is generated randomly
+      await new Account({
+        user: user._id,
+        number: Math.floor(Math.random() * 10000).toString(),
+        balance: 5000 // TODO remove for final version
+      }).save();
+
       done(null, user);
     }
   )

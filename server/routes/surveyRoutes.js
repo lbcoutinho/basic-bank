@@ -5,7 +5,7 @@ const { URL } = require('url');
 const requireLogin = require('../middlewares/requireLogin');
 
 const mongoose = require('mongoose');
-const Survey = mongoose.model('surveys');
+const Survey = ""; // mongoose.model('surveys');
 
 module.exports = app => {
   app.get('/api/surveys', requireLogin, async (req, res) => {

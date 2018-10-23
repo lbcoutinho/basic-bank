@@ -26,7 +26,7 @@ module.exports = app => {
   });
 
   // Return current logged in user model
-  app.get('/api/current_user', (req, res) => {
+  app.get('/api/current-user', (req, res) => {
     res.send(req.user ? req.user : '');
   });
 };

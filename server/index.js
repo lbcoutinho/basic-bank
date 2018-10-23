@@ -5,7 +5,8 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 require('./models/User');
-require('./models/Survey');
+require('./models/Account');
+require('./models/CreditCard');
 require('./services/passport');
 
 // Connect to mongo
@@ -27,7 +28,8 @@ app.use(passport.session());
 
 // Routes
 require('./routes/authRoutes')(app);
-require('./routes/surveyRoutes')(app);
+require('./routes/accountRoutes')(app);
+require('./routes/creditCardRoutes')(app);
 
 // Setup express to work with create-react-app on production
 if (process.env.NODE_ENV === 'production') {
