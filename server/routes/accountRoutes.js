@@ -49,21 +49,15 @@ module.exports = app => {
 
   // Delete contact by id
   app.delete('/api/account/contact/:id', requireLogin, async (req, res) => {
-    console.log('delete', req.params.id);
-    
-    try {
-      await Account.updateOne({ user: req.user.id }, { $pull: { contacts: req.params.id } }).exec();
-      res.status(204).send();
-    } catch (err) {
-      console.log(err);
-    }
+    await Account.updateOne({ user: req.user.id }, { $pull: { contacts: req.params.id } }).exec();
+    res.status(204).send();
   });
 
   // Perform validations before transfer
   app.put('/api/account/validate-transfer', requireLogin, async (req, res) => {
     const response = {};
 
-    // Get current user account
+    // Get current user account info
     const originAccount = await Account.findOne({ user: req.user.id }).select({
       number: true,
       balance: true
@@ -75,48 +69,24 @@ module.exports = app => {
       number: originAccount.number
     };
 
+    // Get destination user and account info
+    const destinationAccount = await Account.findOne({ user: req.body.destination })
+      .select({
+        user: true,
+        number: true
+      })
+      .populate('user', ['_id', 'fullName'])
+      .exec();
+
+    response.destination = {
+      userId: destinationAccount.user._id,
+      name: destinationAccount.user.fullName,
+      number: destinationAccount.number
+    };
+
     // Get value from request body
     const value = new Number(req.body.value);
     response.value = value;
-
-    // Check if destination is valid
-    let destinationAccount;
-    const { destination } = req.body;
-
-    if (emailRegex.test(destination)) {
-      const destinationUser = await User.findOne({ email: destination }).select({
-        _id: true
-      });
-      // Get destination user account
-      if (destinationUser) {
-        destinationAccount = await Account.findOne({ user: destinationUser._id }).select({
-          contacts: false,
-          history: false
-        });
-      }
-    } else if (destination.length == 4) {
-      const accountNumber = new Number(destination);
-      if (!Number.isNaN(accountNumber)) {
-        destinationAccount = await Account.findOne({ number: accountNumber }).select({
-          contacts: false,
-          history: false
-        });
-      }
-    }
-
-    if (destinationAccount) {
-      const destinationUser = await User.findOne({ _id: destinationAccount.user });
-      response.destination = {
-        userId: destinationUser._id,
-        name: destinationUser.fullName,
-        number: destinationAccount.number
-      };
-    } else {
-      // Abort validation if destination is invalid
-      response.invalidDestination = 'Invalid destination account';
-      res.send(response);
-      return;
-    }
 
     // Check current user account balance
     if (originAccount.balance < value) {
@@ -134,23 +104,25 @@ module.exports = app => {
 
   // Performs transfer operation
   // Obs: Currently implementation is not atomic
-  // Expected input:
-  //   {
-  //     "origin": {
-  //         "userId": "5bce73076b90e6f",
-  //         "name": "User 1",
-  //         "number": "8605"
-  //     },
-  //     "value": 100,
-  //     "destination": {
-  //         "userId": "5bce1fa3b05d52b",
-  //         "name": "User 2",
-  //         "number": "4892"
-  //     },
-  //     "useCreditCard": "message" // Message will contain this param if account balance is insufficient
-  // }
+  /**
+   * Expected input:
+   * {
+   *   "origin": {
+   *       "userId": "5bce73076b90e6f",
+   *       "name": "User 1",
+   *       "number": "8605"
+   *   },
+   *   "value": 100,
+   *   "destination": {
+   *       "userId": "5bce1fa3b05d52b",
+   *       "name": "User 2",
+   *       "number": "4892"
+   *   },
+   *   "creditCardId": "5bce1fa3b05d52b" // Message will contain this param if account balance is insufficient
+   * }
+   */
   app.put('/api/account/transfer', requireLogin, async (req, res) => {
-    const { origin, destination, useCreditCard } = req.body;
+    const { origin, destination, creditCardId } = req.body;
     const value = new Number(req.body.value);
     const date = new Date();
 
@@ -161,9 +133,10 @@ module.exports = app => {
       amount: -value,
       date
     };
-    if (useCreditCard) {
+
+    if (creditCardId) {
       await CreditCard.updateOne(
-        { user: origin.userId },
+        { _id: creditCardId },
         {
           $inc: { totalSpent: value },
           $push: { history: historyEntry }

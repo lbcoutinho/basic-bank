@@ -4,3 +4,5 @@ export const FETCH_CREDIT_CARD_LIST = 'fetch_credit_card_list';
 export const FETCH_CREDIT_CARD = 'fetch_credit_card';
 export const FETCH_CONTACT_LIST = 'fetch_contact_list';
 export const NEW_CONTACT = 'new_contact';
+export const TRANSFER_UPDATE = 'transfer_update';
+

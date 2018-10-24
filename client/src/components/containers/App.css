@@ -1,3 +1,4 @@
+/* General */
 .loading {
   margin: auto;
   margin-top: 2em;
@@ -7,6 +8,7 @@
   background: #ccc;
 }
 
+/* Page Header */
 .page-title {
   padding: 1em;
   min-height: 4em;
@@ -20,6 +22,27 @@
 .page-title-btn {
   position: relative;
   top: -0.3em;
+}
+
+/* Forms */
+.field-group {
+  margin-top: 1em;
+}
+
+.field-group label {
+  font-weight: bold;
+  font-size: 1em;
+  color: #333;
+}
+
+.field-group select {
+  border: 1px solid #aaa;
+  width: auto;
+}
+
+.field-group input.small-input {
+  width: 20% !important;
+  display: block;
 }
 
 /* Dashboard */
@@ -84,22 +107,6 @@
   color: #333;
   font-weight: bold;
   font-size: 1.1em;
-}
-
-/* Credit Card New */
-.field-group {
-  margin-top: 1em;
-}
-
-.field-group label {
-  font-weight: bold;
-  font-size: 1em;
-  color: #333;
-}
-
-.field-group select {
-  border: 1px solid #aaa;
-  width: auto;
 }
 
 /* Contacts List */

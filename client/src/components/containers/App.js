@@ -12,6 +12,7 @@ import CreditCardDetails from '../creditCard/CreditCardDetails';
 import CreditCardNew from '../creditCard/CreditCardNew';
 import ContactList from '../contact/ContactList';
 import ContactNew from '../contact/ContactNew';
+import TransferNew from '../transfer/TransferNew';
 
 class App extends Component {
   componentDidMount() {
@@ -32,6 +33,7 @@ class App extends Component {
               <Route exact path="/creditcard/new" component={CreditCardNew} />
               <Route exact path="/contact" component={ContactList} />
               <Route exact path="/contact/new" component={ContactNew} />
+              <Route exact path="/transfer/new" component={TransferNew} />
             </Switch>
           </main>
         </div>

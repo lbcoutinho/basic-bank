@@ -13,9 +13,9 @@ module.exports = app => {
     '/auth/google/callback',
     // Authenticate user using 'google' passport strategy
     passport.authenticate('google'),
-    // Redirect to /surveys after authentication
+    // Redirect to /home after authentication
     (req, res) => {
-      res.redirect('/surveys');
+      res.redirect('/home');
     }
   );
 

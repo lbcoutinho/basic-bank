@@ -14,10 +14,6 @@ class ContactList extends Component {
     this.props.fetchContacts();
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps', nextProps);
-  }
-
   deleteContact(e) {
     if (window.confirm('Are you sure you want to delete this contact?')) {
       this.props.deleteContact(e.target.id);
@@ -39,7 +35,6 @@ class ContactList extends Component {
   }
 
   render() {
-    console.log('render', this.props.contacts);
     if (this.props.contacts) {
       return (
         <div className="center">
