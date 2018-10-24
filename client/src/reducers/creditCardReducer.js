@@ -1,4 +1,4 @@
-import { FETCH_CREDIT_CARDS, FETCH_CREDIT_CARD_BY_ID } from '../actions/types';
+import { FETCH_CREDIT_CARD_LIST, FETCH_CREDIT_CARD } from '../actions/types';
 
 const initialState = {
   list: null,
@@ -7,9 +7,9 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case FETCH_CREDIT_CARDS:
+    case FETCH_CREDIT_CARD_LIST:
       return { ...state, list: action.payload, card: null };
-    case FETCH_CREDIT_CARD_BY_ID:
+    case FETCH_CREDIT_CARD:
       return { ...state, list: null, card: action.payload };
     default:
       return state;

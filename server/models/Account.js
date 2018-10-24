@@ -4,9 +4,9 @@ const HistoryEntry = require('./HistoryEntry');
 
 const accountSchema = new Schema({
   number: String,
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: 'users' },
   balance: { type: Number, default: 0 },
-  contacts: [Schema.Types.ObjectId],
+  contacts: [{ type: Schema.Types.ObjectId, ref: 'users' }],
   history: [HistoryEntry]
 });
 

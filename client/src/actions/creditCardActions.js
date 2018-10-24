@@ -1,17 +1,17 @@
-import { FETCH_CREDIT_CARDS, FETCH_CREDIT_CARD_BY_ID } from './types';
+import { FETCH_CREDIT_CARD_LIST, FETCH_CREDIT_CARD } from './types';
 import axios from 'axios';
 
-export const fetchCreditCards = () => {
+export const fetchCreditCardList = () => {
   return async dispatch => {
     const res = await axios.get('/api/credit-card');
-    dispatch({ type: FETCH_CREDIT_CARDS, payload: res.data });
+    dispatch({ type: FETCH_CREDIT_CARD_LIST, payload: res.data });
   };
 };
 
-export const fetchCreditCardById = id => {
+export const fetchCreditCard = id => {
   return async dispatch => {
     const res = await axios.get(`/api/credit-card/${id}`);
-    dispatch({ type: FETCH_CREDIT_CARD_BY_ID, payload: res.data });
+    dispatch({ type: FETCH_CREDIT_CARD, payload: res.data });
   };
 };
 

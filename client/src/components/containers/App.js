@@ -10,6 +10,8 @@ import Dashboard from '../Dashboard';
 import CreditCardList from '../creditCard/CreditCardList';
 import CreditCardDetails from '../creditCard/CreditCardDetails';
 import CreditCardNew from '../creditCard/CreditCardNew';
+import ContactList from '../contact/ContactList';
+import ContactNew from '../contact/ContactNew';
 
 class App extends Component {
   componentDidMount() {
@@ -28,6 +30,8 @@ class App extends Component {
               <Route exact path="/creditcard" component={CreditCardList} />
               <Route exact path="/creditcard/details/:id" component={CreditCardDetails} />
               <Route exact path="/creditcard/new" component={CreditCardNew} />
+              <Route exact path="/contact" component={ContactList} />
+              <Route exact path="/contact/new" component={ContactNew} />
             </Switch>
           </main>
         </div>

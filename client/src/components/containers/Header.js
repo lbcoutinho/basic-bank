@@ -45,6 +45,7 @@ class Header extends Component {
             <ul className="side-nav" id="main-menu">
               <li><Link to="/home"><i className="fa fa-home" /> Home</Link></li>
               <li><Link to="/creditcard"><i className="fa fa-credit-card" /> Cards</Link></li>
+              <li><Link to="/contact"><i className="fa fa-users" /> Contacts</Link></li>
             </ul>
           </div>
 

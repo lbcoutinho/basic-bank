@@ -25,7 +25,7 @@ class Dashboard extends Component {
           <br />
           <b>Balance:</b> {account.balance}
         </div>
-        <table className="account-history">
+        <table className="account-history table">
           <thead>
             <tr>
               <th>Date</th>
@@ -51,7 +51,7 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
-  return { auth: state.auth, account: state.account };
+  return { auth: state.auth, account: state.account.data };
 }
 export default connect(
   mapStateToProps,

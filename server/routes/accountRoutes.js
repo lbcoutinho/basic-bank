@@ -18,7 +18,15 @@ module.exports = app => {
 
   // Get account contacts
   app.get('/api/account/contact', requireLogin, async (req, res) => {
-    res.send(await Account.findOne({ user: req.user.id }).select({ contacts: true }));
+    try {
+      const contacts = await Account.findOne({ user: req.user.id })
+        .select({ contacts: true })
+        .populate('contacts', ['fullName', 'email'])
+        .exec();
+      res.send(contacts);
+    } catch (err) {
+      res.status(500).send(err);
+    }
   });
 
   // Add new contact to user account
@@ -26,10 +34,28 @@ module.exports = app => {
     const { email } = req.body;
     const contact = await User.findOne({ email });
     if (contact) {
-      await Account.updateOne({ user: req.user.id }, { $push: { contacts: contact._id } }).exec();
-      return res.send({});
+      const exists = (await Account.count({ contacts: mongoose.Types.ObjectId(contact._id) })) > 0;
+      // Check if user is already in contacts list
+      if (!exists) {
+        await Account.updateOne({ user: req.user.id }, { $push: { contacts: contact._id } }).exec();
+        res.status(204).send();
+      } else {
+        res.status(400).send(`${contact.fullName} is already a contact.`);
+      }
     } else {
       res.status(404).send('User not found');
+    }
+  });
+
+  // Delete contact by id
+  app.delete('/api/account/contact/:id', requireLogin, async (req, res) => {
+    console.log('delete', req.params.id);
+    
+    try {
+      await Account.updateOne({ user: req.user.id }, { $pull: { contacts: req.params.id } }).exec();
+      res.status(204).send();
+    } catch (err) {
+      console.log(err);
     }
   });
 
@@ -39,10 +65,15 @@ module.exports = app => {
 
     // Get current user account
     const originAccount = await Account.findOne({ user: req.user.id }).select({
-      number: true, balance: true
+      number: true,
+      balance: true
     });
 
-    response.origin = { userId: req.user.id, name: req.user.fullName, number: originAccount.number };
+    response.origin = {
+      userId: req.user.id,
+      name: req.user.fullName,
+      number: originAccount.number
+    };
 
     // Get value from request body
     const value = new Number(req.body.value);
@@ -75,7 +106,11 @@ module.exports = app => {
 
     if (destinationAccount) {
       const destinationUser = await User.findOne({ _id: destinationAccount.user });
-      response.destination = { userId: destinationUser._id, name: destinationUser.fullName, number: destinationAccount.number };
+      response.destination = {
+        userId: destinationUser._id,
+        name: destinationUser.fullName,
+        number: destinationAccount.number
+      };
     } else {
       // Abort validation if destination is invalid
       response.invalidDestination = 'Invalid destination account';
@@ -115,29 +150,49 @@ module.exports = app => {
   //     "useCreditCard": "message" // Message will contain this param if account balance is insufficient
   // }
   app.put('/api/account/transfer', requireLogin, async (req, res) => {
-
     const { origin, destination, useCreditCard } = req.body;
     const value = new Number(req.body.value);
     const date = new Date();
 
     // Check if useCreditCard value is present in the request
-    const historyEntry = { sentTo: destination.userId, description: `Transfer sent to ${destination.name}`, amount: -value, date };
+    const historyEntry = {
+      sentTo: destination.userId,
+      description: `Transfer sent to ${destination.name}`,
+      amount: -value,
+      date
+    };
     if (useCreditCard) {
-      await CreditCard.updateOne({ user: origin.userId }, {
-        $inc: { totalSpent: value },
-        $push: { history: historyEntry }
-      }).exec();
+      await CreditCard.updateOne(
+        { user: origin.userId },
+        {
+          $inc: { totalSpent: value },
+          $push: { history: historyEntry }
+        }
+      ).exec();
     } else {
-      await Account.updateOne({ number: origin.number }, {
-        $inc: { balance: -value },
-        $push: { history: historyEntry }
-      }).exec();
+      await Account.updateOne(
+        { number: origin.number },
+        {
+          $inc: { balance: -value },
+          $push: { history: historyEntry }
+        }
+      ).exec();
     }
 
-    await Account.updateOne({ number: destination.number }, {
-      $inc: { balance: value },
-      $push: { history: { receivedFrom: origin.userId, description: `Transfer received from ${origin.name}`, amount: value, date } }
-    }).exec();
+    await Account.updateOne(
+      { number: destination.number },
+      {
+        $inc: { balance: value },
+        $push: {
+          history: {
+            receivedFrom: origin.userId,
+            description: `Transfer received from ${origin.name}`,
+            amount: value,
+            date
+          }
+        }
+      }
+    ).exec();
 
     res.status(204).send();
   });

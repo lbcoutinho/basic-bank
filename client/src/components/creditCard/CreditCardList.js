@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchCreditCards } from '../../actions';
+import { fetchCreditCardList } from '../../actions';
 import { Link } from 'react-router-dom';
 import Loading from '../Loading';
 
 class CreditCardList extends Component {
   componentDidMount() {
-    this.props.fetchCreditCards();
+    this.props.fetchCreditCardList();
   }
 
   renderCard(card) {
     let flag;
     if (card.flag === 'Master') {
-      flag = <img src={require('../../images/master.png')} width="60" height="40" alt="Card flag" />
+      flag = (
+        <img src={require('../../images/master.png')} width="60" height="40" alt="Card flag" />
+      );
     } else {
-      flag = <img src={require('../../images/visa.png')} width="60" height="25" alt="Card flag" className="card-visa" />    
+      flag = <img src={require('../../images/visa.png')} width="60" height="25" alt="Card flag" className="card-visa" />;
     }
 
     return (
@@ -23,18 +25,23 @@ class CreditCardList extends Component {
           <div className="card-content white-text">
             <div className="card-header">
               <div className="left">
-                <img src={require('../../images/bank.png')} width="40" height="40" alt="Basic Bank" />
+                <img
+                  src={require('../../images/bank.png')}
+                  width="40"
+                  height="40"
+                  alt="Basic Bank"
+                />
               </div>
               <div className="right">Basic Bank</div>
             </div>
             <div className="card-number">{card.number}</div>
             <div className="card-footer">
-              <span className="right">
-                { flag }
-              </span>
+              <span className="right">{flag}</span>
               <div className="left">{this.props.auth.fullName}</div>
-              <br/>
-              <div className="left">Exp: {card.expirationMonth}/{card.expirationYear}</div>
+              <br />
+              <div className="left">
+                Exp: {card.expirationMonth}/{card.expirationYear}
+              </div>
             </div>
           </div>
           <div className="card-action">
@@ -55,9 +62,7 @@ class CreditCardList extends Component {
             </Link>
             <h5>Credit Cards</h5>
           </div>
-          <div className="row">
-            {this.props.creditCards.map(card => this.renderCard(card)) }
-          </div>
+          <div className="row">{this.props.creditCards.map(card => this.renderCard(card))}</div>
         </div>
       );
     } else {
@@ -67,9 +72,9 @@ class CreditCardList extends Component {
 }
 
 function mapStateToProps(state) {
-  return { creditCards: state.creditCard.all, auth: state.auth };
+  return { creditCards: state.creditCard.list, auth: state.auth };
 }
 export default connect(
   mapStateToProps,
-  { fetchCreditCards }
+  { fetchCreditCardList }
 )(CreditCardList);

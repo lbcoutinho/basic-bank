@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchCreditCardById, deleteCreditCard } from '../../actions';
+import { fetchCreditCard, deleteCreditCard } from '../../actions';
 import Loading from '../Loading';
 
 class CreditCardDetails extends Component {
   constructor(props) {
     super(props);
-
     this.deleteCard = this.deleteCard.bind(this);
   }
 
   componentDidMount() {
+    // Get param from URL and fetch card data
     const id = this.props.match.params.id;
-    this.props.fetchCreditCardById(id);
+    this.props.fetchCreditCard(id);
   }
 
   deleteCard() {
@@ -37,7 +37,9 @@ class CreditCardDetails extends Component {
       return (
         <div>
           <div className="teal lighten-2 page-title">
-            <button onClick={this.deleteCard} className="btn orange right page-title-btn">Delete</button>
+            <button onClick={this.deleteCard} className="btn orange right page-title-btn">
+              Delete
+            </button>
             <div className="info-group">
               <label>Number: </label>
               <span>{card.number}</span>
@@ -72,9 +74,9 @@ class CreditCardDetails extends Component {
 }
 
 function mapStateToProps(state) {
-  return { creditCard: state.creditCard.byId };
+  return { creditCard: state.creditCard.card };
 }
 export default connect(
   mapStateToProps,
-  { fetchCreditCardById, deleteCreditCard }
+  { fetchCreditCard, deleteCreditCard }
 )(CreditCardDetails);

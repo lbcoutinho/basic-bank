@@ -3,6 +3,10 @@
   margin-top: 2em;
 }
 
+.table tr:nth-child(even) {
+  background: #ccc;
+}
+
 .page-title {
   padding: 1em;
   min-height: 4em;
@@ -31,10 +35,6 @@
 .account-history tr th:nth-child(1),
 .account-history tr th:nth-child(3) {
   width: 15%;
-}
-
-.account-history tr:nth-child(even) {
-  background: #ccc;
 }
 
 .positive {
@@ -100,4 +100,21 @@
 .field-group select {
   border: 1px solid #aaa;
   width: auto;
+}
+
+/* Contacts List */
+.contact-table tbody tr {
+  height: 4.5em;
+}
+
+.contact-table tr th:nth-child(1),
+.contact-table tr th:nth-child(2) {
+  width: 40%;
+}
+
+.contact-table tr button {
+  display: none;
+}
+.contact-table tr:hover button {
+  display: block;
 }

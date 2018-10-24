@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 const HistoryEntry = require('./HistoryEntry');
 
 const creditCardSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: 'users' },
   expirationMonth: Number,
   expirationYear: Number,
   number: { type: String, unique: true },
