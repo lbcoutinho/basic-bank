@@ -10,6 +10,7 @@ const userSchema = new Schema({
   fullName: String,
   email: String,
   phone: String,
+  firstAccess: {type: Boolean, default: true},
   password: String
 });
 

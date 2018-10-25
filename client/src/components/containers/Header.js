@@ -1,12 +1,59 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import $ from 'jquery';
+import M from 'materialize-css/dist/js/materialize.min.js';
+import 'materialize-css/dist/css/materialize.min.css';
 
 class Header extends Component {
-  hideSideBar() {
-    if (!this.props.auth) {
-      $(this.refs.sideBar).remove();
+  constructor(props) {
+    super(props);
+    this.state = {
+      showSideBar: false
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const showSideBar = nextProps.auth && !nextProps.auth.firstAccess;
+    this.setState({ showSideBar });
+  }
+
+  componentDidUpdate() {
+    M.Sidenav.init(document.querySelectorAll('.sidenav'), { menuWidth: 250, closeOnClick: true });
+  }
+
+  renderSideBar() {
+    if (this.state.showSideBar) {
+      return (
+        <div>
+          <a data-target="main-menu" className="sidenav-trigger show-on-large">
+            <i className="fa fa-bars" />
+          </a>
+          <ul id="main-menu" className="sidenav">
+            <li>
+              <Link to="/home" className="sidenav-close">
+                <i className="fa fa-home" /> Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/creditcard" className="sidenav-close">
+                <i className="fa fa-credit-card" /> Cards
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className="sidenav-close">
+                <i className="fa fa-users" /> Contacts
+              </Link>
+            </li>
+            <li>
+              <Link to="/transfer/new" className="sidenav-close">
+                <i className="fa fa-exchange" /> Transfer
+              </Link>
+            </li>
+          </ul>
+        </div>
+      );
+    } else {
+      return <div />;
     }
   }
 
@@ -36,20 +83,7 @@ class Header extends Component {
           <Link to={this.props.auth ? '/home' : '/'} className="brand-logo center">
             Basic Bank
           </Link>
-
-          {this.hideSideBar()}
-          <div ref="sideBar">
-            <a data-activates="main-menu" className="button-collapse show-on-large">
-              <i className="fa fa-bars" />
-            </a>
-            <ul className="side-nav" id="main-menu">
-              <li><Link to="/home"><i className="fa fa-home" /> Home</Link></li>
-              <li><Link to="/creditcard"><i className="fa fa-credit-card" /> Cards</Link></li>
-              <li><Link to="/contact"><i className="fa fa-users" /> Contacts</Link></li>
-              <li><Link to="/transfer/new"><i className="fa fa-exchange" /> Transfer</Link></li>
-            </ul>
-          </div>
-
+          {this.renderSideBar()}
           <ul className="right">{this.renderLoginLogout()}</ul>
         </div>
       </nav>
@@ -57,7 +91,7 @@ class Header extends Component {
   }
 }
 
-function mapStateToProps({ auth }) {
-  return { auth };
+function mapStateToProps(state) {
+  return { auth: state.auth };
 }
 export default connect(mapStateToProps)(Header);

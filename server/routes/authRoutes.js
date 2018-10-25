@@ -15,7 +15,11 @@ module.exports = app => {
     passport.authenticate('google'),
     // Redirect to /home after authentication
     (req, res) => {
-      res.redirect('/home');
+      if (req.user && req.user.firstAccess) {
+        res.redirect('/password/new');  
+      } else {
+        res.redirect('/home');
+      }
     }
   );
 
@@ -23,10 +27,5 @@ module.exports = app => {
   app.get('/api/logout', (req, res) => {
     req.logout();
     res.redirect('/');
-  });
-
-  // Return current logged in user model
-  app.get('/api/current-user', (req, res) => {
-    res.send(req.user ? req.user : '');
   });
 };

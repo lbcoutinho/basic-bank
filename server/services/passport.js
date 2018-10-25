@@ -25,7 +25,7 @@ passport.use(
     },
     // Callback function that runs after successful authentication
     async (accessToken, refreshToken, profile, done) => {
-      const existingUser = await User.findOne({ googleId: profile.id });
+      const existingUser = await User.findOne({ googleId: profile.id }).select({ password: false });
 
       if (existingUser) {
         return done(null, existingUser);

@@ -28,6 +28,7 @@ app.use(passport.session());
 
 // Routes
 require('./routes/authRoutes')(app);
+require('./routes/userRoutes')(app);
 require('./routes/accountRoutes')(app);
 require('./routes/creditCardRoutes')(app);
 
