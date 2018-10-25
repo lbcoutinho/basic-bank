@@ -11,8 +11,6 @@ export const fetchUser = () => {
 export const setPassword = (password, history) => {
   return async dispatch => {
     const res = await axios.post('/api/user/password', { password });
-    console.log(res.data);
-    
     dispatch({ type: FETCH_USER, payload: res.data });
     history.push('/home');
   };

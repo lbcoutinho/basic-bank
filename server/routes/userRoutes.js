@@ -12,9 +12,10 @@ module.exports = app => {
   app.post('/api/user/password', requireLogin, async (req, res) => {
     const user = await User.findOne({ _id: req.user.id });
     user.firstAccess = false;
+    // TODO encrypt password
     user.password = req.body.password;
     user.save();
-    user.password = null;
+    // TODO password should not be returned with this user
     res.send(user);
   });
 };

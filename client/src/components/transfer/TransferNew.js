@@ -17,6 +17,7 @@ class TransferNew extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.renderCreditCards = this.renderCreditCards.bind(this);
+    this.executeTransfer = this.executeTransfer.bind(this);
   }
 
   componentDidMount() {
@@ -46,9 +47,21 @@ class TransferNew extends Component {
         }
       } else {
         // If validation response does not contain noFunds or useCreditCard messages then proceed with transfer
-        this.props.executeTransfer(validation, this.props.history);
+        this.executeTransfer(validation);
       }
     }
+  }
+
+  executeTransfer(transfer) {
+    if (transfer.value > 1000) {
+      let password;
+      do {
+        password = window.prompt('Please, type your password to confirm the operation.');
+      } while(!password);
+      
+      // TODO implement confirmPassword action and related backend routes
+    }
+    this.props.executeTransfer(transfer, this.props.history);
   }
 
   onChange(e) {
@@ -68,7 +81,7 @@ class TransferNew extends Component {
     } else {
       const transfer = this.props.transferValidation;
       transfer.creditCardId = this.state.card;
-      this.props.executeTransfer(transfer, this.props.history);
+      this.executeTransfer(transfer);
     }
   }
 
